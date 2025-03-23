@@ -1,5 +1,8 @@
 import kotlinx.coroutines.runBlocking
 import retrofit2.HttpException
+import java.time.Instant
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 import kotlin.system.exitProcess
 
 fun main(): Unit = runBlocking {
@@ -36,7 +39,10 @@ suspend fun addUser() {
         val followingsCount = RetrofitClient.github.getUserFollowings(username).count()
         val repos = RetrofitClient.github.getUserRepos(username)
         val repoNames = repos.map { it.repoName }
-        user = User(githubUser.username, followersCount, followingsCount, githubUser.createdAt, repoNames)
+        user = User(
+            githubUser.username, followersCount, followingsCount,
+            convertTime(githubUser.createdAt), repoNames
+        )
         UsersCache.addUser(user)
         println("$username added successfully:")
         println(user)
@@ -83,4 +89,12 @@ fun searchByRepo() {
         return
     }
     println("No repositories found!")
+}
+
+fun convertTime(utcTime: String): String {
+    val iranTime = Instant.parse(utcTime)
+        .atZone(ZoneId.of("Asia/Tehran"))
+        .toLocalDateTime()
+
+    return iranTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
 }
