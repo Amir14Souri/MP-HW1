@@ -4,7 +4,9 @@ import kotlin.system.exitProcess
 
 fun main(): Unit = runBlocking {
     while (true) {
+        println("-----\nMenu\n-----")
         println("1. Add User\n2. Show Users\n3. Search by Username\n4. Search by Repo\n5. Exit")
+        print("Enter Command: ")
         val choice = readLine()
         when (choice) {
             "1" -> addUser()
@@ -12,16 +14,18 @@ fun main(): Unit = runBlocking {
             "3" -> searchByUsername()
             "4" -> searchByRepo()
             "5" -> exitProcess(0)
+            else -> println("Invalid command!")
         }
     }
 }
 
 suspend fun addUser() {
-    println("Enter username:")
+    print("Enter username: ")
     val username: String = readLine() ?: ""
 
     var user = UsersCache.getUser(username)
     if (user != null) {
+        println("User already exists!")
         println(user)
         return
     }
@@ -37,19 +41,26 @@ suspend fun addUser() {
         println("$username added successfully:")
         println(user)
     } catch (e: HttpException) {
-        if (e.message == "HTTP 404")
-            println("User not found")
+        if (e.code() == 404)
+            println("User not found!")
+        else
+            println("An error occurred!")
     }
 }
 
 fun showUsers() {
-    for (user in UsersCache.getUsers()) {
-        println(user)
+    val users = UsersCache.getUsers()
+    if (users.isNotEmpty()) {
+        for (user in UsersCache.getUsers()) {
+            println(user)
+        }
+        return
     }
+    println("No users have been added yet!")
 }
 
 fun searchByUsername() {
-    println("Enter username:")
+    print("Enter username: ")
     val username = readLine() ?: ""
 
     val foundUsers = UsersCache.searchByUsername(username)
@@ -58,11 +69,11 @@ fun searchByUsername() {
             println(user)
         return
     }
-    println("No users found")
+    println("No users found!")
 }
 
 fun searchByRepo() {
-    println("Enter repository name:")
+    print("Enter repository name: ")
     val repoName = readLine() ?: ""
 
     val foundRepos = UsersCache.searchByRepo(repoName)
@@ -71,5 +82,5 @@ fun searchByRepo() {
             println(repo)
         return
     }
-    println("No repositories found")
+    println("No repositories found!")
 }

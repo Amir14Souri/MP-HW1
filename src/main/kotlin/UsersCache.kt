@@ -11,7 +11,7 @@ object UsersCache {
 
     fun getUser(username: String): User? {
         for (user in users) {
-            if (user.username == username)
+            if (user.username.lowercase() == username.lowercase())
                 return user
         }
         return null
