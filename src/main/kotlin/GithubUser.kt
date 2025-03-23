@@ -15,4 +15,9 @@ data class User(
     val followingsCount: Int,
     val createdAt: String,
     val publicRepos: List<String>
-)
+) {
+    override fun toString(): String {
+        return "$username | $followingsCount followers | $followingsCount " +
+                "followings | created at $createdAt | public repositories: $publicRepos"
+    }
+}
