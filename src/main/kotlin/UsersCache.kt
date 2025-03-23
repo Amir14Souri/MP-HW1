@@ -16,4 +16,26 @@ object UsersCache {
         }
         return null
     }
+
+    fun searchByUsername(filter: String): List<User> {
+        val matchedUsers = mutableListOf<User>()
+
+        for (user in users) {
+            if (user.username.lowercase().contains(filter.lowercase()))
+                matchedUsers.add(user)
+        }
+        return matchedUsers
+    }
+
+    fun searchByRepo(filter: String): List<String> {
+        val matchedRepos = mutableListOf<String>()
+
+        for (user in users) {
+            for (repo in user.publicRepos) {
+                if (repo.lowercase().contains(filter.lowercase()))
+                    matchedRepos.add("${user.username} | $repo")
+            }
+        }
+        return matchedRepos
+    }
 }

@@ -1,13 +1,17 @@
 import kotlinx.coroutines.runBlocking
 import retrofit2.HttpException
+import kotlin.system.exitProcess
 
 fun main(): Unit = runBlocking {
     while (true) {
-        println("1. Add User\n2. Show Users\n3. Search by User\n4. Search by Repo\n5. Exit")
+        println("1. Add User\n2. Show Users\n3. Search by Username\n4. Search by Repo\n5. Exit")
         val choice = readLine()
         when (choice) {
             "1" -> addUser()
             "2" -> showUsers()
+            "3" -> searchByUsername()
+            "4" -> searchByRepo()
+            "5" -> exitProcess(0)
         }
     }
 }
@@ -42,4 +46,30 @@ fun showUsers() {
     for (user in UsersCache.getUsers()) {
         println(user)
     }
+}
+
+fun searchByUsername() {
+    println("Enter username:")
+    val username = readLine() ?: ""
+
+    val foundUsers = UsersCache.searchByUsername(username)
+    if (foundUsers.isNotEmpty()) {
+        for (user in foundUsers)
+            println(user)
+        return
+    }
+    println("No users found")
+}
+
+fun searchByRepo() {
+    println("Enter repository name:")
+    val repoName = readLine() ?: ""
+
+    val foundRepos = UsersCache.searchByRepo(repoName)
+    if (foundRepos.isNotEmpty()) {
+        for (repo in foundRepos)
+            println(repo)
+        return
+    }
+    println("No repositories found")
 }
