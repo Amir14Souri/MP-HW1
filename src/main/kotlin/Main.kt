@@ -9,7 +9,7 @@ fun main(): Unit = runBlocking {
     while (true) {
         println("-----\nMenu\n-----")
         println("1. Add User\n2. Show Users\n3. Search by Username\n4. Search by Repo\n5. Exit")
-        print("Enter Command: ")
+        print("Enter command number: ")
         val choice = readLine()
         when (choice) {
             "1" -> addUser()
